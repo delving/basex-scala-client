@@ -12,7 +12,7 @@ import scala.xml.Utility.trim
 class BaseXSpec extends Specification {
 
   var s: BaseX = {
-    val server = new BaseX("localhost", 1984, "admin", "admin")
+    val server = new BaseX("localhost", 1234, 1235, "admin", "admin")
     server.start()
     server
   }

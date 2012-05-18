@@ -15,7 +15,7 @@ import scala.Predef._
  * @author Manuel Bernhardt <bernhardt.manuel@gmail.com>
  */
 
-class BaseX(host: String, port: Int, user: String, pass: String) extends Implicits {
+class BaseX(host: String, port: Int, eport: Int, user: String, pass: String) extends Implicits {
 
   private var server: BaseXServer = null
 
@@ -32,14 +32,14 @@ class BaseX(host: String, port: Int, user: String, pass: String) extends Implici
       }
       System.setProperty("org.basex.path", d.getAbsolutePath)
     }
-    server = new BaseXServer()
+    server = new BaseXServer("-e%s".format(eport), "-p%s".format(port))
   }
 
   /**
    * Stops an embedded BaseX server
    */
   def stop() {
-    BaseXServer.stop(port, 1985)
+    BaseXServer.stop(port, eport)
   }
 
   def withSession[T](database: String)(block: ClientSession => T): T = {
