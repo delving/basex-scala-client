@@ -15,7 +15,7 @@ import scala.Predef._
  * @author Manuel Bernhardt <bernhardt.manuel@gmail.com>
  */
 
-class BaseX(host: String, port: Int, eport: Int, user: String, pass: String) extends Implicits {
+class BaseX(host: String, port: Int, eport: Int, user: String, pass: String, useQueryCache: Boolean = false) extends Implicits {
 
   private var server: BaseXServer = null
 
@@ -52,7 +52,11 @@ class BaseX(host: String, port: Int, eport: Int, user: String, pass: String) ext
 
 
   def withSession[T](block: ClientSession => T): T = {
-    val session = new ClientSession(host, port, user, pass)
+    val session = if(useQueryCache) {
+      new ClientSession(host, port, user, pass)
+    } else {
+      new NonCachedClientSession(host, port, user, pass)
+    }
     try {
       block(session)
     } finally {
