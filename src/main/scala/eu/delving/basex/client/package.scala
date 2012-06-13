@@ -6,7 +6,7 @@ import org.basex.server.{ServerCmd, ClientSession, ClientQuery}
 import org.basex.io.in.{DecodingInput, BufferInput}
 import org.basex.util.Token
 import org.basex.util.list.ByteList
-import java.io.{OutputStream, BufferedInputStream}
+import java.io.OutputStream
 
 
 object `package` extends Implicits
@@ -29,6 +29,10 @@ trait Implicits {
 
     def open(db: String) {
       session.execute("open " + db)
+    }
+
+    def alter(db: String, newDb: String) {
+      session.execute("alter %s %s".format(db, newDb))
     }
 
     def find(query: String): Iterator[Node] = {
