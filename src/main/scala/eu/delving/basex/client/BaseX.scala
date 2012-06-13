@@ -97,6 +97,12 @@ class BaseX(host: String, port: Int, eport: Int, user: String, pass: String, use
     }
   }
 
+  def alter(db: String, newDb: String) {
+    withSession {
+      session => session.execute("alter db %s %s".format(db, newDb))
+    }
+  }
+
   def add(database: String, path: String, document: String) {
     withSession {
       session =>

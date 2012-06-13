@@ -31,10 +31,6 @@ trait Implicits {
       session.execute("open " + db)
     }
 
-    def alter(db: String, newDb: String) {
-      session.execute("alter %s %s".format(db, newDb))
-    }
-
     def find(query: String): Iterator[Node] = {
       session.query(query).map(XML.loadString(_))
     }
