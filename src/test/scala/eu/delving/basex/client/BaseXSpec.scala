@@ -48,10 +48,9 @@ class BaseXSpec extends Specification {
     }
 
     "find something and return it as scala nodes" in {
-      val r = s.withSession {
-        session =>
-          session.open("test")
-          session.find("let $items := /root for $i in $items return <version id=\"{$i/@id}\">{count($i)}</version>").toList
+      val r = s.withSession { session =>
+        session.open("test")
+        session.find("let $items := /root for $i in $items return <version id=\"{$i/@id}\">{count($i)}</version>").toList
       }
       r.size must equalTo (1)
     }

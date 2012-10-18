@@ -11,9 +11,13 @@ import java.io.OutputStream
 
 object `package` extends Implicits
 
+/**
+ * Enhances the core BaseX API to be more scala-friendly
+ */
 trait Implicits {
 
   class RichClientQuery(query: ClientQuery) extends Iterator[String] {
+
     def next(): String = {
       if(query.isInstanceOf[NonCachedClientQuery]) {
         query.asInstanceOf[NonCachedClientQuery].getNext
@@ -23,6 +27,7 @@ trait Implicits {
     }
 
     def hasNext: Boolean = query.more()
+
   }
 
   class RichClientSession(session: ClientSession) {
@@ -70,7 +75,12 @@ trait Implicits {
   implicit def withRichClientSession[A <: ClientSession](session: A): RichClientSession = new RichClientSession(session)
 
 
-  class NonCachedClientSession(val host: String, val port: Int, val user: String, val pass: String) extends ClientSession(host, port, user, pass) {
+  /**
+   * This implementation of a [[org.basex.server.ClientSession]] does not cache the incoming query results but instead
+   * streams them directly, which is useful when a query returns a big chunk of results that would otherwise not hold in memory.
+   *
+   */
+  class StreamingClientSession(val host: String, val port: Int, val user: String, val pass: String) extends ClientSession(host, port, user, pass) {
 
     def getServerOutput = sout
 
@@ -85,9 +95,9 @@ trait Implicits {
     }
   }
 
-  class NonCachedClientQuery(query: String, session: NonCachedClientSession, os: OutputStream) extends ClientQuery(query, session, os) {
+  class NonCachedClientQuery(query: String, session: StreamingClientSession, os: OutputStream) extends ClientQuery(query, session, os) {
 
-    private def ncs = cs.asInstanceOf[NonCachedClientSession]
+    private def ncs = cs.asInstanceOf[StreamingClientSession]
 
     private var streamConsumed: Boolean = false
     private var resultStream: BufferInput = null

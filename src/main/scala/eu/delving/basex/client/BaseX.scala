@@ -5,16 +5,15 @@ import java.io.{File, ByteArrayInputStream}
 import org.basex.server.ClientSession
 import org.basex.core.cmd.{Rename, Delete}
 import xml.Node
-import scala.Predef._
 
 /**
- * TODO support remote connection
+ * BaseX Client wrapper for Scala
  *
+ * TODO support remote connection
  * TODO query with limits
  *
  * @author Manuel Bernhardt <bernhardt.manuel@gmail.com>
  */
-
 class BaseX(host: String, port: Int, eport: Int, user: String, pass: String, useQueryCache: Boolean = false) extends Implicits {
 
   private var server: BaseXServer = null
@@ -42,6 +41,11 @@ class BaseX(host: String, port: Int, eport: Int, user: String, pass: String, use
     BaseXServer.stop(port, eport)
   }
 
+  /**
+   * Starts a new session for the specified database
+   * @param database the name of the database to connect to
+   * @param block the code to run in the context of the session
+   */
   def withSession[T](database: String)(block: ClientSession => T): T = {
     withSession {
       session =>
@@ -51,11 +55,16 @@ class BaseX(host: String, port: Int, eport: Int, user: String, pass: String, use
   }
 
 
+  /**
+   * Executes code in the context of a session, provided a database is already open.
+   * Depending on the configuration, may use a [[eu.delving.basex.client.Implicits.StreamingClientSession]]
+   * @param block the code to run in the context of the session
+   */
   def withSession[T](block: ClientSession => T): T = {
     val session = if(useQueryCache) {
       new ClientSession(host, port, user, pass)
     } else {
-      new NonCachedClientSession(host, port, user, pass)
+      new StreamingClientSession(host, port, user, pass)
     }
     try {
       block(session)
@@ -64,6 +73,12 @@ class BaseX(host: String, port: Int, eport: Int, user: String, pass: String, use
     }
   }
 
+  /**
+   * Executes code in the context of specific query results
+   * @param database the name of the database
+   * @param query the query to execute
+   * @param block the code to execute in the context of the query results
+   */
   def withQuery[T](database: String, query: String)(block: RichClientQuery => T) = {
     withSession {
       session =>
