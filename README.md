@@ -3,6 +3,13 @@
 This is a client library that simplifies the use of BaseX (http://www.basex.org) in Scala applications.
 It does so by providing wrappers that leverage Scala's collection library and other features such as the XML integration.
 
+In order to use the library, add the following dependencies / resolvers to your SBT build:
+
+- dependencies: `"eu.delving" %% "basex-scala-client" % "0.5"`
+- resolvers:
+  - `"Delving Releases Repository" at "http://development.delving.org:8081/nexus/content/groups/public"`
+  - `"Delving Snapshot Repository" at "http://development.delving.org:8081/nexus/content/repositories/snapshots"`
+
 ## Usage
 
 The BaseX Scala client adds a few enhancements using implicit conversions, so if you want to make use of it, always use the following import:
