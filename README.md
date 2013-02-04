@@ -69,6 +69,10 @@ Check out the [spec](https://github.com/delving/basex-scala-client/blob/master/s
 
 ## Versions
 
+### 04.02.2013 - 0.6
+
+- upgrade to Scala 2.10.0
+
 ### 18.10.2012 - 0.5
 
 - using BaseX 7.3
